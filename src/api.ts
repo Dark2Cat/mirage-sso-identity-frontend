@@ -40,7 +40,7 @@ export interface RegisterPayload {
   checkPassword: string;
 }
 
-export interface CurrentUserResult {
+export interface UserSummary {
   id: number;
   username: string;
   nickname: string;
@@ -48,6 +48,9 @@ export interface CurrentUserResult {
   phone?: string;
   avatarUrl?: string;
   roles: string[];
+}
+
+export interface CurrentUserResult extends UserSummary {
   permissions: string[];
   apps: string[];
 }
@@ -85,6 +88,7 @@ export interface ProfileUpdatePayload {
   email?: string;
   phone?: string;
   avatarUrl?: string;
+  avatar?: File | null;
 }
 
 export type RoleStatus = 'ACTIVE' | 'DISABLED';
@@ -319,8 +323,31 @@ export async function resetUserPassword(id: string | number) {
 }
 
 export async function updateMyProfile(payload: ProfileUpdatePayload) {
-  const response = await api.put<ApiResponse<BackendUser>>('/admin/users/me/profile', payload);
+  if (payload.avatar) {
+    const formData = new FormData();
+    appendFormValue(formData, 'nickname', payload.nickname);
+    appendFormValue(formData, 'email', payload.email);
+    appendFormValue(formData, 'phone', payload.phone);
+    appendFormValue(formData, 'avatarUrl', payload.avatarUrl);
+    formData.append('avatar', payload.avatar);
+
+    const response = await api.put<ApiResponse<UserSummary>>('/admin/users/me/profile', formData);
+    return response.data.data;
+  }
+
+  const response = await api.put<ApiResponse<UserSummary>>('/admin/users/me/profile', {
+    nickname: payload.nickname,
+    email: payload.email,
+    phone: payload.phone,
+    avatarUrl: payload.avatarUrl,
+  });
   return response.data.data;
+}
+
+function appendFormValue(formData: FormData, key: string, value?: string) {
+  if (value !== undefined) {
+    formData.append(key, value);
+  }
 }
 
 export async function changeMyPassword(payload: { oldPassword: string; newPassword: string }) {

@@ -1027,8 +1027,26 @@ a {
   font-weight: 800;
 }
 
+.security-warning.error {
+  border-color: color-mix(in srgb, var(--danger) 42%, var(--line));
+  background: color-mix(in srgb, var(--danger) 12%, rgba(255, 255, 255, 0.045));
+  color: #ffb1b9;
+}
+
 .security-warning.success {
+  border-color: rgba(72, 215, 166, 0.38);
+  background: rgba(72, 215, 166, 0.1);
   color: #9ff0d0;
+}
+
+.security-warning.info {
+  border-color: rgba(111, 214, 232, 0.34);
+  background: rgba(111, 214, 232, 0.08);
+  color: #b7eaf2;
+}
+
+.security-warning span {
+  line-height: 1.5;
 }
 
 .danger-action {
@@ -1484,6 +1502,14 @@ a {
   justify-content: center;
   gap: 10px;
   margin-top: 22px;
+}
+
+.avatar-upload-hint {
+  max-width: 260px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
 }
 
 .profile-meta-list {
